@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
 fun SearchBar() {
     Row(
         modifier = Modifier
-            .padding(top = 22.dp)
             .fillMaxWidth()
             .height(33.dp),
         verticalAlignment = Alignment.CenterVertically,
