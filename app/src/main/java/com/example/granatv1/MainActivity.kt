@@ -1,6 +1,8 @@
 package com.example.granatv1
 
 import android.os.Bundle
+import android.provider.MediaStore
+import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 
@@ -59,6 +63,8 @@ fun MainUI() {
             Divider(modifier = Modifier.padding(top = 8.dp))
 
             UnderDivider()
+            Spacer(modifier = Modifier.padding(top = 6.dp))
+            SongItem("The Poetic Edda", "Disembodied Tyrant", "The...", "6:03", R.drawable.thepoeticedda)
         }
     }
 }
@@ -209,7 +215,72 @@ fun UnderDivider() {
 
 }
 
+@Composable
+fun SongItem(title: String, artist: String, albumTitle: String, duration: String, imageId: Int, modifier: Modifier= Modifier) {
+    Box(modifier
+        .clickable(){
+        println("Song-Clicked")
+    }) {
+        Box(
+            modifier
+                .fillMaxWidth()
+                .background(Color.White, shape = RoundedCornerShape(4.dp))
+                .padding(6.dp)
+        ) {
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
 
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.thepoeticedda),
+                        contentDescription = "songCover",
+                        modifier = Modifier.size(48.dp).clip(shape = RoundedCornerShape(4.dp))
+                    )
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+                Column(
+                    modifier.weight(1f)
+                ) {
+                    Text(
+                        text = title,
+                        color = Color.Black,
+                        fontSize = 18.sp
+                    )
+                    Row(
+                        modifier.height(22.dp)
+                    ) {
+                        Text(
+                            text = duration,
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                        Spacer(modifier.width(4.dp))
+                        Text(
+                            text = "$artist | $albumTitle",
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+                Box(
+
+                ) {
+                    IconButton(onClick = { println("SongSettingsClicked") },
+                        modifier = Modifier
+                            .size(28.dp))
+                    {
+                        Image(
+                            painter = painterResource(id = R.drawable.dots_icon),
+                            contentDescription = "SongSettings",
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
