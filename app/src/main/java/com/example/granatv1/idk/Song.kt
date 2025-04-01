@@ -67,7 +67,7 @@ fun getAllSongs(context: Context): List<SongInfo> {
         while (it.moveToNext()) {
             val title = it.getString(titleColumn) ?: "Unknown Title"
             val artist = it.getString(artistColumn) ?: "Unknown Artist"
-            val albumTitle = it.getString(albumColumn) ?: "Unknown Album"
+            val albumTitle = it.getString(albumColumn) ?: "Signle"
             val duration = (it.getInt(durationColumn) / 1000).toString()
             val path = it.getString(pathColumn) ?: ""
 

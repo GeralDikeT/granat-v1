@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
-import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.granatv1.ui.theme.GranatV1Theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -30,7 +27,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -41,16 +37,12 @@ import android.os.Build
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.granatv1.idk.getAllSongs
-import com.example.granatv1.idk.SongInfo
 import java.io.IOException
 import android.Manifest
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 
 
 class MainActivity : ComponentActivity() {
@@ -101,7 +93,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private  fun accessAudioLibrary() {
-        Toast.makeText(this, "Audio Permission granted", Toast.LENGTH_LONG).show()
+        return
     }
 
 }
@@ -277,7 +269,7 @@ fun UnderDivider() {
 
 @Composable
 fun SongListLoader(context: Context) {
-    val songs = getAllSongs(context)
+    val songs = getAllSongs(context).asReversed()
 
     LazyColumn {
         itemsIndexed(songs) {index, song ->
@@ -341,7 +333,7 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
                         )
                     } else {
                         Image(
-                            painter = painterResource(id = R.drawable.thepoeticedda),
+                            painter = painterResource(id = R.drawable.no_cover),
                             contentDescription = "songCover",
                             modifier = Modifier
                                 .size(48.dp)
