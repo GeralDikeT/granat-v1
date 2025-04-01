@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import com.example.granatv1.ui.theme.GranatV1Theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Divider
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -43,6 +41,17 @@ import java.io.IOException
 import android.Manifest
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.colorspace.WhitePoint
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.granatv1.idk.SongInfo
 
 
 class MainActivity : ComponentActivity() {
@@ -268,49 +277,12 @@ fun UnderDivider() {
 }
 
 @Composable
-fun SongListLoader(context: Context) {
-    val songs = getAllSongs(context).asReversed()
-
-    LazyColumn {
-        itemsIndexed(songs) {index, song ->
-            SongItem(
-                title = song.title,
-                artist = song.artist,
-                albumTitle = song.albumTitle,
-                duration = song.duration,
-                imageId = song.albumArt,
-                path = song.path
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
-
-fun durationCalculate(duration: String) : String {
-    val totalSeconds = duration.toInt()
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return String.format("%02d:%02d", minutes, seconds)
-}
-
-@Composable
-fun SongItem(title: String, artist: String, albumTitle: String, duration: String, imageId: Bitmap?, path: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    var mediaPlayer : MediaPlayer? = null
-
+fun SongItem(song: SongInfo, modifier: Modifier, onSongClick: (SongInfo) -> Unit) {
+    val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
     Box(modifier
-        .clickable(){
-            val filePath = path
-            val mediaPlayer = MediaPlayer()
-
-            try {
-                mediaPlayer.setDataSource(filePath)
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-    }) {
+        .clickable() {
+            onSongClick(song)
+        }) {
         Box(
             modifier
                 .fillMaxWidth()
@@ -323,9 +295,9 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
                 Box(
 
                 ) {
-                    if (imageId != null) {
+                    if (song.albumArt != null) {
                         Image(
-                            bitmap = imageId.asImageBitmap(),
+                            bitmap = song.albumArt.asImageBitmap(),
                             contentDescription = "songCover",
                             modifier = Modifier
                                 .size(48.dp)
@@ -346,7 +318,7 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
                     modifier.weight(1f)
                 ) {
                     Text(
-                        text = title,
+                        text = song.title,
                         color = Color.Black,
                         fontSize = 18.sp,
                         maxLines = 1,
@@ -356,13 +328,13 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
                         modifier.height(22.dp).width(IntrinsicSize.Max)
                     ) {
                         Text(
-                            text = durationCalculate(duration),
+                            text = durationCalculate(song.duration),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
                         Spacer(modifier.width(4.dp))
                         Text(
-                            text = "$artist | $albumTitle",
+                            text = artistAndAlbumInfo,
                             fontSize = 14.sp,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -387,8 +359,192 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
     }
 }
 
-/*@Preview(showBackground = true)
+@Composable
+fun SongListLoader(context: Context) {
+    val songs = remember { getAllSongs(context).asReversed() }
+    var currentSong by remember { mutableStateOf<SongInfo?>(null) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn {
+            itemsIndexed(songs) { index, song ->
+                SongItem(
+                    song = song,
+                    modifier = Modifier,
+                    onSongClick = { clickedSong ->
+                        playSong(clickedSong.path)
+                        currentSong = clickedSong
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        currentSong?.let { song ->
+            BottomSongBar(
+                song = song,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+            )
+        }
+    }
+}
+
+fun durationCalculate(duration: String) : String {
+    val totalSeconds = duration.toInt()
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
+var mediaPlayer: MediaPlayer? = null
+var currentPath: String? = null
+
+fun playSong(path: String) {
+    if (mediaPlayer == null || currentPath != path) {
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer().apply {
+            try {
+                setDataSource(path)
+                prepare()
+                start()
+                currentPath = path
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    } else {
+            if (!mediaPlayer!!.isPlaying) {
+                mediaPlayer!!.start()
+            }
+    }
+}
+
+fun playPauseFunction() {
+    if (mediaPlayer != null) {
+        if (mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.pause()
+        } else {
+            mediaPlayer!!.start()
+        }
+    }
+}
+
+@Composable
+fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
+    val isPlaying = remember { mutableStateOf(true) }
+
+    val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
+
+    val shortTitle = if (song.title.length > 15) song.title.take(15) + "..." else song.title
+    val shortArtistAndAlbumInfo = if (artistAndAlbumInfo.length > 15) song.artist.take(15) + "..." else song.artist
+
+    Box(
+        modifier
+            .clickable() {
+                println("ne skvoz")
+            }
+    ) {
+        Box(
+            modifier
+                .fillMaxWidth()
+                .height(54.dp)
+                .background(color = Color(0xFFEEEBEB), shape = RoundedCornerShape(8.dp))
+                .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp)
+                    .align(Alignment.Center),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (song.albumArt != null) {
+                        Image(
+                            bitmap = song.albumArt.asImageBitmap(),
+                            contentDescription = "Current song cover",
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_cover),
+                            contentDescription = "Current song cover",
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Column() {
+                        Text(
+                            text = shortTitle,
+                            color = Color(0xFF924A4A),
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = shortArtistAndAlbumInfo,
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(-8.dp)
+            ) {
+                IconButton(onClick = { println("asdad") }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.previussong_icon),
+                        contentDescription = "previusSong",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+                IconButton(onClick = {
+                    isPlaying.value = !isPlaying.value
+                    playPauseFunction()
+                }) {
+                    val icon = if (isPlaying.value) {
+                        R.drawable.pause_icon
+                    } else {
+                        R.drawable.play_sign
+                    }
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = "Play/Pause",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+                IconButton(onClick = { println("asdad") }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.nextsong_icon),
+                        contentDescription = "nextSong",
+                        modifier = Modifier.size(25.dp)
+                    )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    MainUI()
-}*/
+    var context = LocalContext.current
+    MainUI(context)
+}
