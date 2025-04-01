@@ -1,5 +1,8 @@
 package com.example.granatv1
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Space
@@ -29,28 +32,84 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import android.media.MediaPlayer
+import android.os.Build
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.granatv1.idk.getAllSongs
+import com.example.granatv1.idk.SongInfo
+import java.io.IOException
+import android.Manifest
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.registerForActivityResult
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (isAudioPermissionGranted()) {
+            accessAudioLibrary()
+        } else {
+            requestAudioPermission()
+        }
+
         setContent {
-            MainUI()
+            MainUI(this)
         }
     }
+    private fun isAudioPermissionGranted() : Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED
+        } else {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun requestAudioPermission() {
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        requestPermissionLauncher.launch(permissions)
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {permission ->
+        val audioPermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permission[Manifest.permission.READ_MEDIA_AUDIO] ?: false
+        } else {
+            permission[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+        }
+
+        if (audioPermissionGranted) {
+            accessAudioLibrary()
+        } else {
+
+            Toast.makeText(this, "Audio Permission Granted", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private  fun accessAudioLibrary() {
+        Toast.makeText(this, "Audio Permission granted", Toast.LENGTH_LONG).show()
+    }
+
 }
 
 @Composable
-fun MainUI() {
+fun MainUI(context: Context) {
+
     GranatV1Theme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -59,15 +118,15 @@ fun MainUI() {
         ) {
             TopBar()
             Cards()
-
             Divider(modifier = Modifier.padding(top = 8.dp))
-
             UnderDivider()
             Spacer(modifier = Modifier.padding(top = 6.dp))
-            SongItem("The Poetic Edda", "Disembodied Tyrant", "The...", "6:03", R.drawable.thepoeticedda)
+
+            SongListLoader(context)
         }
     }
 }
+
 
 
 @Composable
@@ -156,6 +215,7 @@ fun HorizontalCardButton(header: String, imageId: Int, modifier: Modifier = Modi
         }
     }
 }
+
 @Composable
 fun Cards() {
 
@@ -216,10 +276,48 @@ fun UnderDivider() {
 }
 
 @Composable
-fun SongItem(title: String, artist: String, albumTitle: String, duration: String, imageId: Int, modifier: Modifier= Modifier) {
+fun SongListLoader(context: Context) {
+    val songs = getAllSongs(context)
+
+    LazyColumn {
+        itemsIndexed(songs) {index, song ->
+            SongItem(
+                title = song.title,
+                artist = song.artist,
+                albumTitle = song.albumTitle,
+                duration = song.duration,
+                imageId = song.albumArt,
+                path = song.path
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+fun durationCalculate(duration: String) : String {
+    val totalSeconds = duration.toInt()
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
+@Composable
+fun SongItem(title: String, artist: String, albumTitle: String, duration: String, imageId: Bitmap?, path: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    var mediaPlayer : MediaPlayer? = null
+
     Box(modifier
         .clickable(){
-        println("Song-Clicked")
+            val filePath = path
+            val mediaPlayer = MediaPlayer()
+
+            try {
+                mediaPlayer.setDataSource(filePath)
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
     }) {
         Box(
             modifier
@@ -233,33 +331,47 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
                 Box(
 
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.thepoeticedda),
-                        contentDescription = "songCover",
-                        modifier = Modifier.size(48.dp).clip(shape = RoundedCornerShape(4.dp))
-                    )
+                    if (imageId != null) {
+                        Image(
+                            bitmap = imageId.asImageBitmap(),
+                            contentDescription = "songCover",
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(shape = RoundedCornerShape(4.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.thepoeticedda),
+                            contentDescription = "songCover",
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(shape = RoundedCornerShape(4.dp))
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.width(6.dp))
                 Column(
-                    modifier.weight(1f)
+                    modifier.weight(1f).width(IntrinsicSize.Max)
                 ) {
                     Text(
                         text = title,
                         color = Color.Black,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Row(
-                        modifier.height(22.dp)
+                        modifier.height(22.dp).width(IntrinsicSize.Max)
                     ) {
                         Text(
-                            text = duration,
+                            text = durationCalculate(duration),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
                         Spacer(modifier.width(4.dp))
                         Text(
                             text = "$artist | $albumTitle",
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -282,8 +394,8 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MainUI()
-}
+}*/
