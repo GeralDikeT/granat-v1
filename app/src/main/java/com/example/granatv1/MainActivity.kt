@@ -351,12 +351,13 @@ fun SongItem(title: String, artist: String, albumTitle: String, duration: String
                 }
                 Spacer(modifier = Modifier.width(6.dp))
                 Column(
-                    modifier.weight(1f).width(IntrinsicSize.Max)
+                    modifier.weight(1f)
                 ) {
                     Text(
                         text = title,
                         color = Color.Black,
                         fontSize = 18.sp,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Row(
