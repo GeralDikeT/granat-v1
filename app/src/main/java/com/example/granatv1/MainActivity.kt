@@ -279,6 +279,9 @@ fun UnderDivider() {
 @Composable
 fun SongItem(song: SongInfo, modifier: Modifier, onSongClick: (SongInfo) -> Unit) {
     val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
+
+    val shortTitle = if (song.title.length > 15) song.title.take(15) + "..." else song.title
+    val shortArtistAndAlbumInfo = if (artistAndAlbumInfo.length > 15) song.artist.take(15) + "..." else song.artist
     Box(modifier
         .clickable() {
             onSongClick(song)
@@ -318,7 +321,7 @@ fun SongItem(song: SongInfo, modifier: Modifier, onSongClick: (SongInfo) -> Unit
                     modifier.weight(1f)
                 ) {
                     Text(
-                        text = song.title,
+                        text = shortTitle,
                         color = Color.Black,
                         fontSize = 18.sp,
                         maxLines = 1,
@@ -334,7 +337,7 @@ fun SongItem(song: SongInfo, modifier: Modifier, onSongClick: (SongInfo) -> Unit
                         )
                         Spacer(modifier.width(4.dp))
                         Text(
-                            text = artistAndAlbumInfo,
+                            text = shortArtistAndAlbumInfo,
                             fontSize = 14.sp,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -436,9 +439,6 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
 
     val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
 
-    val shortTitle = if (song.title.length > 15) song.title.take(15) + "..." else song.title
-    val shortArtistAndAlbumInfo = if (artistAndAlbumInfo.length > 15) song.artist.take(15) + "..." else song.artist
-
     Box(
         modifier
             .clickable() {
@@ -449,7 +449,7 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
             modifier
                 .fillMaxWidth()
                 .height(54.dp)
-                .background(color = Color(0xFFEEEBEB), shape = RoundedCornerShape(8.dp))
+                .background(color = Color(0xFFE1D4D4), shape = RoundedCornerShape(8.dp))
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
         ) {
             Row(
@@ -483,18 +483,20 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
 
                     Column() {
                         Text(
-                            text = shortTitle,
+                            text = song.title,
                             color = Color(0xFF924A4A),
                             fontSize = 16.sp,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(0.dp, 150.dp)
                         )
                         Text(
-                            text = shortArtistAndAlbumInfo,
+                            text = artistAndAlbumInfo,
                             color = Color.Gray,
                             fontSize = 14.sp,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(0.dp, 150.dp)
                         )
                     }
                 }
@@ -505,7 +507,7 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.previussong_icon),
                         contentDescription = "previusSong",
-                        modifier = Modifier.size(25.dp)
+                        modifier = Modifier.size(25.dp).requiredWidth(25.dp)
                     )
                 }
                 IconButton(onClick = {
@@ -520,14 +522,14 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
                     Image(
                         painter = painterResource(id = icon),
                         contentDescription = "Play/Pause",
-                        modifier = Modifier.size(25.dp)
+                        modifier = Modifier.size(25.dp).requiredWidth(25.dp)
                     )
                 }
                 IconButton(onClick = { println("asdad") }) {
                     Image(
                         painter = painterResource(id = R.drawable.nextsong_icon),
                         contentDescription = "nextSong",
-                        modifier = Modifier.size(25.dp)
+                        modifier = Modifier.size(25.dp).requiredWidth(25.dp)
                     )
                         }
                     }
