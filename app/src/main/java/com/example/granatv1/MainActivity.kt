@@ -42,7 +42,11 @@ import android.Manifest
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +56,7 @@ import androidx.compose.ui.graphics.colorspace.WhitePoint
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.granatv1.idk.SongInfo
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -435,7 +440,7 @@ fun playPauseFunction() {
 
 @Composable
 fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
-    val isPlaying = remember { mutableStateOf(true) }
+    val isPlaying = remember(song) { mutableStateOf(true) }
 
     val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
 
@@ -537,10 +542,6 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
             }
         }
     }
-
-
-
-
 
 
 
