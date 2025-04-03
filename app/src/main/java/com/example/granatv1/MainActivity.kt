@@ -54,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.colorspace.WhitePoint
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.granatv1.idk.SongInfo
 import kotlinx.coroutines.delay
@@ -120,7 +121,7 @@ fun MainUI(context: Context) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black)
-                .padding(8.dp)
+                .padding(10.dp)
         ) {
             TopBar()
             Cards()
@@ -372,12 +373,14 @@ fun SongListLoader(context: Context) {
     val songs = remember { getAllSongs(context).asReversed() }
     var currentSong by remember { mutableStateOf<SongInfo?>(null) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        LazyColumn (
+            modifier = Modifier.padding(bottom = if (currentSong != null) 60.dp else 0.dp)
+        ) {
             itemsIndexed(songs) { index, song ->
                 SongItem(
                     song = song,
-                    modifier = Modifier,
+                    modifier = Modifier.padding(horizontal = 2.dp),
                     onSongClick = { clickedSong ->
                         playSong(clickedSong.path)
                         currentSong = clickedSong
@@ -391,6 +394,8 @@ fun SongListLoader(context: Context) {
             BottomSongBar(
                 song = song,
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 0.dp)
                     .align(Alignment.BottomCenter)
             )
         }
@@ -446,6 +451,7 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
 
     Box(
         modifier
+            .fillMaxWidth()
             .clickable() {
                 println("ne skvoz")
             }
@@ -453,7 +459,7 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
         Box(
             modifier
                 .fillMaxWidth()
-                .height(54.dp)
+                .height(60.dp)
                 .background(color = Color(0xFFE1D4D4), shape = RoundedCornerShape(8.dp))
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
         ) {
@@ -493,7 +499,7 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
                             fontSize = 16.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.widthIn(0.dp, 150.dp)
+                            modifier = Modifier.widthIn(0.dp, 175.dp)
                         )
                         Text(
                             text = artistAndAlbumInfo,
@@ -501,7 +507,7 @@ fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
                             fontSize = 14.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.widthIn(0.dp, 150.dp)
+                            modifier = Modifier.widthIn(0.dp, 175.dp)
                         )
                     }
                 }
