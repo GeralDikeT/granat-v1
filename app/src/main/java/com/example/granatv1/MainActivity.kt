@@ -1,8 +1,8 @@
 package com.example.granatv1
+import com.example.granatv1.idk.Song
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,34 +30,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import android.media.MediaPlayer
 import android.os.Build
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
-import com.example.granatv1.idk.getAllSongs
-import java.io.IOException
 import android.Manifest
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.animateScrollBy
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.colorspace.WhitePoint
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.granatv1.idk.SongInfo
-import kotlinx.coroutines.delay
+import com.example.granatv1.idk.Player
 
 
 class MainActivity : ComponentActivity() {
@@ -134,7 +123,150 @@ fun MainUI(context: Context) {
     }
 }
 
+@Composable
+fun BottomSongBar(song: Song, modifier: Modifier = Modifier) {
+    val isPlaying = remember(song) { mutableStateOf(true) }
 
+    val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
+
+    Box(
+        modifier
+            .fillMaxWidth()
+            .clickable() {
+                println("ne skvoz")
+            }
+    ) {
+        Box(
+            modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .background(color = Color(0xFFE1D4D4), shape = RoundedCornerShape(8.dp))
+                .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp)
+                    .align(Alignment.Center),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (song.albumArt != null) {
+                        Image(
+                            bitmap = song.albumArt.asImageBitmap(),
+                            contentDescription = "Current song cover",
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_cover),
+                            contentDescription = "Current song cover",
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Column() {
+                        Text(
+                            text = song.title,
+                            color = Color(0xFF924A4A),
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(0.dp, 175.dp)
+                        )
+                        Text(
+                            text = artistAndAlbumInfo,
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(0.dp, 175.dp)
+                        )
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(-8.dp)
+                ) {
+                    IconButton(onClick = { println("asdad") }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.previussong_icon),
+                            contentDescription = "previusSong",
+                            modifier = Modifier
+                                .size(25.dp)
+                                .requiredWidth(25.dp)
+                        )
+                    }
+                    IconButton(onClick = {
+                        isPlaying.value = !isPlaying.value
+                        Player.playPauseFunction()
+                    }) {
+                        val icon = if (isPlaying.value) {
+                            R.drawable.pause_icon
+                        } else {
+                            R.drawable.play_sign
+                        }
+                        Image(
+                            painter = painterResource(id = icon),
+                            contentDescription = "Play/Pause",
+                            modifier = Modifier
+                                .size(25.dp)
+                                .requiredWidth(25.dp)
+                        )
+                    }
+                    IconButton(onClick = { println("asdad") }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.nextsong_icon),
+                            contentDescription = "nextSong",
+                            modifier = Modifier
+                                .size(25.dp)
+                                .requiredWidth(25.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SongListLoader(context: Context) {
+    val songs = remember { Player.getAllSongs(context).asReversed() }
+    var currentSong by remember { mutableStateOf<Song?>(null) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        LazyColumn(
+            modifier = Modifier.padding(bottom = if (currentSong != null) 60.dp else 0.dp)
+        ) {
+            itemsIndexed(songs) { index, song ->
+                SongItem(
+                    song = song,
+                    modifier = Modifier.padding(horizontal = 2.dp),
+                    onSongClick = { clickedSong ->
+                        Player.playSong()
+                        currentSong = clickedSong
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        currentSong?.let { song ->
+            BottomSongBar(
+                song = song,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            )
+        }
+    }
+}
 
 @Composable
 fun TopBar() {
@@ -241,6 +373,7 @@ fun Cards() {
 
 @Composable
 fun UnderDivider() {
+    var context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(top = 8.dp)
@@ -251,7 +384,6 @@ fun UnderDivider() {
     ) {
         Row(modifier = Modifier.weight(1f)
             .clickable() {
-                println("clickedRandomButton")
             },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -283,7 +415,7 @@ fun UnderDivider() {
 }
 
 @Composable
-fun SongItem(song: SongInfo, modifier: Modifier, onSongClick: (SongInfo) -> Unit) {
+fun SongItem(song: Song, modifier: Modifier, onSongClick: (Song) -> Unit) {
     val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
 
     val shortTitle = if (song.title.length > 15) song.title.take(15) + "..." else song.title
@@ -368,188 +500,12 @@ fun SongItem(song: SongInfo, modifier: Modifier, onSongClick: (SongInfo) -> Unit
     }
 }
 
-@Composable
-fun SongListLoader(context: Context) {
-    val songs = remember { getAllSongs(context).asReversed() }
-    var currentSong by remember { mutableStateOf<SongInfo?>(null) }
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        LazyColumn (
-            modifier = Modifier.padding(bottom = if (currentSong != null) 60.dp else 0.dp)
-        ) {
-            itemsIndexed(songs) { index, song ->
-                SongItem(
-                    song = song,
-                    modifier = Modifier.padding(horizontal = 2.dp),
-                    onSongClick = { clickedSong ->
-                        playSong(clickedSong.path)
-                        currentSong = clickedSong
-                    }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-
-        currentSong?.let { song ->
-            BottomSongBar(
-                song = song,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 0.dp)
-                    .align(Alignment.BottomCenter)
-            )
-        }
-    }
-}
-
 fun durationCalculate(duration: String) : String {
     val totalSeconds = duration.toInt()
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
     return String.format("%02d:%02d", minutes, seconds)
 }
-
-var mediaPlayer: MediaPlayer? = null
-var currentPath: String? = null
-
-fun playSong(path: String) {
-    if (mediaPlayer == null || currentPath != path) {
-        mediaPlayer?.release()
-        mediaPlayer = MediaPlayer().apply {
-            try {
-                setDataSource(path)
-                prepare()
-                start()
-                currentPath = path
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    } else {
-            if (!mediaPlayer!!.isPlaying) {
-                mediaPlayer!!.start()
-            }
-    }
-}
-
-fun playPauseFunction() {
-    if (mediaPlayer != null) {
-        if (mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.pause()
-        } else {
-            mediaPlayer!!.start()
-        }
-    }
-}
-
-@Composable
-fun BottomSongBar(song: SongInfo, modifier: Modifier = Modifier) {
-    val isPlaying = remember(song) { mutableStateOf(true) }
-
-    val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
-
-    Box(
-        modifier
-            .fillMaxWidth()
-            .clickable() {
-                println("ne skvoz")
-            }
-    ) {
-        Box(
-            modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(color = Color(0xFFE1D4D4), shape = RoundedCornerShape(8.dp))
-                .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp)
-                    .align(Alignment.Center),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (song.albumArt != null) {
-                        Image(
-                            bitmap = song.albumArt.asImageBitmap(),
-                            contentDescription = "Current song cover",
-                            modifier = Modifier
-                                .size(42.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(id = R.drawable.no_cover),
-                            contentDescription = "Current song cover",
-                            modifier = Modifier
-                                .size(42.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Column() {
-                        Text(
-                            text = song.title,
-                            color = Color(0xFF924A4A),
-                            fontSize = 16.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.widthIn(0.dp, 175.dp)
-                        )
-                        Text(
-                            text = artistAndAlbumInfo,
-                            color = Color.Gray,
-                            fontSize = 14.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.widthIn(0.dp, 175.dp)
-                        )
-                    }
-                }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(-8.dp)
-            ) {
-                IconButton(onClick = { println("asdad") }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.previussong_icon),
-                        contentDescription = "previusSong",
-                        modifier = Modifier.size(25.dp).requiredWidth(25.dp)
-                    )
-                }
-                IconButton(onClick = {
-                    isPlaying.value = !isPlaying.value
-                    playPauseFunction()
-                }) {
-                    val icon = if (isPlaying.value) {
-                        R.drawable.pause_icon
-                    } else {
-                        R.drawable.play_sign
-                    }
-                    Image(
-                        painter = painterResource(id = icon),
-                        contentDescription = "Play/Pause",
-                        modifier = Modifier.size(25.dp).requiredWidth(25.dp)
-                    )
-                }
-                IconButton(onClick = { println("asdad") }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.nextsong_icon),
-                        contentDescription = "nextSong",
-                        modifier = Modifier.size(25.dp).requiredWidth(25.dp)
-                    )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
 
 @Preview(showBackground = true)
 @Composable
