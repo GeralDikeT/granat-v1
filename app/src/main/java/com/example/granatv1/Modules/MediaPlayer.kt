@@ -1,4 +1,4 @@
-package com.example.granatv1.idk
+package com.example.granatv1.Modules
 
 import android.content.Context
 import android.database.Cursor
@@ -10,7 +10,7 @@ import android.provider.MediaStore
 import java.io.IOException
 import kotlin.random.Random
 
-class Player(
+class MediaPlayer(
     var mediaPlayer: MediaPlayer? = null,
     var currentPath: String? = null
 )

@@ -1,5 +1,5 @@
 package com.example.granatv1
-import com.example.granatv1.idk.Song
+import com.example.granatv1.Modules.Song
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -46,7 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.granatv1.idk.Player
+import com.example.granatv1.Modules.MediaPlayer
 
 
 class MainActivity : ComponentActivity() {
@@ -205,7 +205,7 @@ fun BottomSongBar(song: Song, modifier: Modifier = Modifier) {
                     }
                     IconButton(onClick = {
                         isPlaying.value = !isPlaying.value
-                        Player.playPauseFunction()
+                        MediaPlayer.playPauseFunction()
                     }) {
                         val icon = if (isPlaying.value) {
                             R.drawable.pause_icon
@@ -237,7 +237,7 @@ fun BottomSongBar(song: Song, modifier: Modifier = Modifier) {
 
 @Composable
 fun SongListLoader(context: Context) {
-    val songs = remember { Player.getAllSongs(context).asReversed() }
+    val songs = remember { MediaPlayer.getAllSongs(context).asReversed() }
     var currentSong by remember { mutableStateOf<Song?>(null) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -249,7 +249,7 @@ fun SongListLoader(context: Context) {
                     song = song,
                     modifier = Modifier.padding(horizontal = 2.dp),
                     onSongClick = { clickedSong ->
-                        Player.playSong()
+                        MediaPlayer.playSong()
                         currentSong = clickedSong
                     }
                 )
