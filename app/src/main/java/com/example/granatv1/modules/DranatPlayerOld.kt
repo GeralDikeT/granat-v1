@@ -1,4 +1,4 @@
-package com.example.granatv1.Modules
+package com.example.granatv1.modules
 
 import android.content.Context
 import android.database.Cursor
@@ -10,42 +10,40 @@ import android.provider.MediaStore
 import java.io.IOException
 import kotlin.random.Random
 
-class MediaPlayer(
+class DranatPlayerOld(
     var mediaPlayer: MediaPlayer? = null,
     var currentPath: String? = null
-)
-{
+) {
+    var currentSongIndex = 0
 
-        var currentSongIndex = 0
-
-        fun playSong(path: String) {
-            if (mediaPlayer == null || currentPath != path) {
-                mediaPlayer?.release()
-                mediaPlayer = MediaPlayer().apply {
-                    try {
-                        setDataSource(path)
-                        prepare()
-                        start()
-                        currentPath = path
+    fun playSong(path: String) {
+        if (mediaPlayer == null || currentPath != path) {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                try {
+                    setDataSource(path)
+                    prepare()
+                    start()
+                    currentPath = path
 
 
-                        setOnCompletionListener {
-                            playNextSong()
-                        }
-                    } catch (e: IOException) {
-                        e.printStackTrace()
+                    setOnCompletionListener {
+                        playNextSong()
                     }
-                }
-            } else {
-                if (!mediaPlayer!!.isPlaying) {
-                    mediaPlayer!!.start()
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
             }
+        } else {
+            if (!mediaPlayer!!.isPlaying) {
+                mediaPlayer!!.start()
+            }
         }
+    }
 
 
     companion object {
-        var songsList = mutableListOf<Song>()
+        var songsList = mutableListOf<GranatSong>()
 
 
         fun getAlbumArt(filePath: String): Bitmap? {
@@ -61,8 +59,8 @@ class MediaPlayer(
             }
         }
 
-        fun getAllSongs(context: Context): List<Song> {
-            val songList = mutableListOf<Song>()
+        fun getAllSongs(context: Context): List<GranatSong> {
+            val granatSongList = mutableListOf<GranatSong>()
 
             val projection = arrayOf(
                 MediaStore.Audio.Media.TITLE,
@@ -91,17 +89,15 @@ class MediaPlayer(
                     val title = it.getString(titleColumn) ?: "Unknown Title"
                     val artist = it.getString(artistColumn) ?: "Unknown Artist"
                     val albumTitle = it.getString(albumColumn) ?: "Single"
-                    val duration = (it.getInt(durationColumn) / 1000).toString()
+                    val duration = it.getInt(durationColumn)
                     val path = it.getString(pathColumn) ?: ""
 
-                    val albumArt = getAlbumArt(path)
-
-                    songList.add(Song(title, artist, albumTitle, duration, path, albumArt))
+                    granatSongList.add(GranatSong(title, artist, albumTitle, duration, path))
                 }
             }
-            songsList = songList
+            songsList = granatSongList
 
-            return songList
+            return granatSongList
         }
     }
 

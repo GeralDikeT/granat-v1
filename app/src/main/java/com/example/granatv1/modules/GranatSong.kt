@@ -1,14 +1,14 @@
-package com.example.granatv1.Modules
+package com.example.granatv1.modules
 
 import android.graphics.Bitmap
 
-class Song(
+data class GranatSong(
     val title: String,
     val artist: String,
     val albumTitle: String,
-    val duration: String,
+    val duration: Int,
     val path: String,
-    val albumArt: Bitmap?
+    val albumArt: Bitmap? = null
 ) {
 
 }
