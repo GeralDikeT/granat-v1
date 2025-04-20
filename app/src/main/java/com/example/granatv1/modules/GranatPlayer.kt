@@ -25,7 +25,7 @@ class GranatPlayer {
     }
 
     fun playNextSong() {
-        val currentSongIndex = MainActivity.songs.list.indexOfFirst { song -> song == currentSong }
+        val currentSongIndex = MainActivity.songs.list.indexOfFirst { song -> song === currentSong }
         var nextSongIndex = 0;
 
         if (isRandom) {
@@ -48,9 +48,14 @@ class GranatPlayer {
             mediaPlayer.stop();
         }
 
+        currentSong = song
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(song.path);
+        mediaPlayer.prepare()
         mediaPlayer.start();
     }
+
+
 
     fun pause() {
         mediaPlayer.pause();
