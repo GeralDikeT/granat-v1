@@ -5,20 +5,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import android.os.Build
 import androidx.core.content.ContextCompat
 import android.Manifest
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.granatv1.modules.GranatPlayer
 import com.example.granatv1.modules.GranatSongRepository
-import com.example.granatv1.ui.components.MainUI
+import com.example.granatv1.ui.MainPage
+import com.example.granatv1.ui.SongPage
 
 
 class MainActivity : ComponentActivity() {
@@ -39,7 +35,7 @@ class MainActivity : ComponentActivity() {
         songs.loadSongs(this);
 
         setContent {
-            MainUI()
+            MainPage()
         }
     }
     private fun isAudioPermissionGranted() : Boolean {
@@ -80,15 +76,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun durationCalculate(duration: String) : String {
-    val totalSeconds = duration.toInt()
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return String.format("%02d:%02d", minutes, seconds)
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    MainUI()
+    SongPage()
 }

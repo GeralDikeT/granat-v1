@@ -18,11 +18,14 @@ class GranatSongRepository() {
             MediaStore.Audio.Media.DATA
         )
 
+        val selection = "${MediaStore.Audio.Media.DATA} LIKE ?"
+        val selectionArgs = arrayOf("%/Music/gugugaga%")
+
         val cursor: Cursor? = context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
-            null,
-            null,
+            selection,
+            selectionArgs,
             null
         )
 

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.granatv1.MainActivity
+import com.example.granatv1.ui.SongPage
 import kotlin.random.Random
 
 class GranatPlayer {
@@ -87,5 +88,9 @@ class GranatPlayer {
     fun resume() {
         mediaPlayer.start();
         isPaused = false
+    }
+
+    fun getCurrentPosition(): Int {
+        return mediaPlayer.currentPosition
     }
 }

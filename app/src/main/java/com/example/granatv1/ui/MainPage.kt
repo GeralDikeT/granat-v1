@@ -1,6 +1,5 @@
-package com.example.granatv1.ui.components
+package com.example.granatv1.ui
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
+import com.example.granatv1.ui.components.BottomSongBar
+import com.example.granatv1.ui.components.HorizontalCardsList
+import com.example.granatv1.ui.components.SongList
+import com.example.granatv1.ui.components.TopBar
+import com.example.granatv1.ui.components.UnderDivider
 import com.example.granatv1.ui.theme.GranatV1Theme
 
 @Composable
-fun MainUI() {
+fun MainPage() {
     GranatV1Theme {
         Column(
             modifier = Modifier

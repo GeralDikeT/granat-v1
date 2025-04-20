@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
+import com.example.granatv1.ui.SongPage
 
 @Composable
 fun SongList(modifier: Modifier = Modifier) {

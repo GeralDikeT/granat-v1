@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.granatv1.MainActivity
 import com.example.granatv1.modules.GranatSong
 import com.example.granatv1.R
 
@@ -35,6 +36,14 @@ fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSon
 
     val shortTitle = if (granatSong.title.length > 15) granatSong.title.take(15) + "..." else granatSong.title
     val shortArtistAndAlbumInfo = if (artistAndAlbumInfo.length > 15) granatSong.artist.take(15) + "..." else granatSong.artist
+
+    fun durationCalculate(duration: Int) : String {
+        val duration = duration / 1000
+        val minutes = duration / 60
+        val seconds = duration % 60
+        return String.format("%02d:%02d", minutes, seconds)
+    }
+
     Box(modifier
         .clickable() {
             onSongClick(granatSong)
@@ -84,7 +93,7 @@ fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSon
                         modifier.height(22.dp).width(IntrinsicSize.Max)
                     ) {
                         Text(
-                            text = "gu:ga",
+                            text = durationCalculate(granatSong.duration),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )

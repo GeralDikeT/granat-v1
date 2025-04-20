@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.granatv1.MainActivity
 import com.example.granatv1.modules.GranatSong
 import com.example.granatv1.R
+import com.example.granatv1.ui.SongPage
 
 @Composable
 fun BottomSongBar(modifier: Modifier = Modifier) {
@@ -47,7 +48,6 @@ fun BottomSongBar(modifier: Modifier = Modifier) {
         modifier
             .fillMaxWidth()
             .clickable() {
-                println("ne skvoz")
             }
     ) {
         Box(
