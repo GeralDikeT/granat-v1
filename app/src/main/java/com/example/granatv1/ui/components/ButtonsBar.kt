@@ -18,10 +18,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.granatv1.MainActivity
 import com.example.granatv1.R
 
 @Composable
 fun ButtonsBar() {
+    val isPlayerPaused = MainActivity.player.isPaused
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(22.dp)
     ) {
@@ -37,7 +40,7 @@ fun ButtonsBar() {
         }
 
         IconButton(
-            onClick = {}
+            onClick = { MainActivity.player.playPreviusSong() }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.previous_song_white),
@@ -48,10 +51,22 @@ fun ButtonsBar() {
         }
 
         IconButton(
-            onClick = {}
+            onClick = {
+                if (MainActivity.player.isPlaying()) {
+                    MainActivity.player.pause();
+                }
+                else {
+                    MainActivity.player.resume();
+                }
+            }
         ) {
+            val icon = if (!isPlayerPaused) {
+                R.drawable.pause_icon
+            } else {
+                R.drawable.play_sign
+            }
             Image(
-                painter = painterResource(id = R.drawable.play_button_icon),
+                painter = painterResource(id = icon),
                 contentDescription = "Play",
                 colorFilter = ColorFilter.tint(Color.White),
                 modifier = Modifier.size(45.dp)
@@ -59,7 +74,7 @@ fun ButtonsBar() {
         }
 
         IconButton(
-            onClick = {}
+            onClick = { MainActivity.player.playNextSong() }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.next_song_white),

@@ -19,14 +19,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.granatv1.MainActivity
 import com.example.granatv1.R
+import com.example.granatv1.modules.GranatSong
 
 @Composable
 fun SongInfoDiv() {
-    val song = MainActivity.songs.list[22]
+
+    val song: GranatSong
+
+    if (MainActivity.player.currentSong != null) {
+         song = MainActivity.player.currentSong!!
+    } else {
+         song = MainActivity.songs.list[22]
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,6 +59,8 @@ fun SongInfoDiv() {
             text = song.title,
             color = Color.White,
             fontSize = 28.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Bold
         )
 
@@ -57,6 +68,8 @@ fun SongInfoDiv() {
         Text(
             text = song.albumTitle,
             color = Color.Gray,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             fontSize = 16.sp
         )
     }

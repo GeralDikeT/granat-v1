@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.granatv1.MainActivity
 import com.example.granatv1.ui.components.BottomSongBar
 import com.example.granatv1.ui.components.HorizontalCardsList
@@ -19,7 +20,7 @@ import com.example.granatv1.ui.components.UnderDivider
 import com.example.granatv1.ui.theme.GranatV1Theme
 
 @Composable
-fun MainPage() {
+fun MainPage(navController: NavHostController) {
     GranatV1Theme {
         Column(
             modifier = Modifier
@@ -33,12 +34,19 @@ fun MainPage() {
             UnderDivider()
             Spacer(modifier = Modifier.padding(top = 6.dp))
 
-            Column(
-
-            ) {
-                SongList(modifier = Modifier.weight(1f))
+            Column {
+                SongList(
+                    modifier = Modifier.weight(1f),
+                    onSongClick = {
+                        navController.navigate("song")
+                    }
+                )
                 if (MainActivity.player.currentSong != null) {
-                    BottomSongBar()
+                    BottomSongBar(
+                        onSongClick = {
+                            navController.navigate("song")
+                        }
+                    )
                 }
             }
         }

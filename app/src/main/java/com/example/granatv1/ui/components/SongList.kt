@@ -15,7 +15,8 @@ import com.example.granatv1.MainActivity
 import com.example.granatv1.ui.SongPage
 
 @Composable
-fun SongList(modifier: Modifier = Modifier) {
+fun SongList(
+    modifier: Modifier = Modifier, onSongClick: () -> Unit) {
     val songs = remember { MainActivity.songs.list }
 
     Box(modifier.fillMaxWidth()) {
@@ -25,22 +26,12 @@ fun SongList(modifier: Modifier = Modifier) {
                     granatSong = song,
                     modifier = Modifier.padding(horizontal = 2.dp),
                     onSongClick = { clickedSong ->
-                        MainActivity.player.playSong(clickedSong);
+                        MainActivity.player.playSong(clickedSong)
+                        onSongClick()
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-
-        /*
-        currentSong?.let { song ->
-            BottomSongBar(
-                granatSong = song,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            )
-        }
-        */
     }
 }

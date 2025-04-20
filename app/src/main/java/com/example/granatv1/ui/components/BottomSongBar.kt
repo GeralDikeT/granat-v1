@@ -37,7 +37,7 @@ import com.example.granatv1.R
 import com.example.granatv1.ui.SongPage
 
 @Composable
-fun BottomSongBar(modifier: Modifier = Modifier) {
+fun BottomSongBar(modifier: Modifier = Modifier, onSongClick: () -> Unit) {
     val isPlayerPaused = MainActivity.player.isPaused
 
     val song = MainActivity.player.currentSong!!
@@ -48,6 +48,7 @@ fun BottomSongBar(modifier: Modifier = Modifier) {
         modifier
             .fillMaxWidth()
             .clickable() {
+                onSongClick()
             }
     ) {
         Box(

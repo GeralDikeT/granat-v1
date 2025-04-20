@@ -11,8 +11,10 @@ import android.Manifest
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.example.granatv1.modules.GranatPlayer
 import com.example.granatv1.modules.GranatSongRepository
+import com.example.granatv1.ui.AppNavHost
 import com.example.granatv1.ui.MainPage
 import com.example.granatv1.ui.SongPage
 
@@ -35,7 +37,8 @@ class MainActivity : ComponentActivity() {
         songs.loadSongs(this);
 
         setContent {
-            MainPage()
+            val navController = rememberNavController()
+            AppNavHost(navController)
         }
     }
     private fun isAudioPermissionGranted() : Boolean {
@@ -81,5 +84,6 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    SongPage()
+    val navController = rememberNavController()
+    SongPage(navController)
 }

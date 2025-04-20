@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.granatv1.MainActivity
 import com.example.granatv1.ui.components.ButtonsBar
 import com.example.granatv1.ui.components.SongInfoDiv
@@ -18,7 +20,7 @@ import com.example.granatv1.ui.components.SongPageNavigation
 import com.example.granatv1.ui.components.TimeProgressLine
 
 @Composable
-fun SongPage() {
+fun SongPage(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -27,7 +29,9 @@ fun SongPage() {
             .padding(30.dp, 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SongPageNavigation()
+        SongPageNavigation(
+            navController
+        )
         SongInfoDiv()
         Spacer(modifier = Modifier.padding(top = 75.dp))
         TimeProgressLine()
