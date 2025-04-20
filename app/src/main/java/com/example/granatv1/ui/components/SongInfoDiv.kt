@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,13 +30,7 @@ import com.example.granatv1.modules.GranatSong
 @Composable
 fun SongInfoDiv() {
 
-    val song: GranatSong
-
-    if (MainActivity.player.currentSong != null) {
-         song = MainActivity.player.currentSong!!
-    } else {
-         song = MainActivity.songs.list[22]
-    }
+    val song = MainActivity.player.currentSong!!
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -55,13 +50,15 @@ fun SongInfoDiv() {
             )
         }
         Spacer(modifier = Modifier.padding(6.dp))
+
         Text(
             text = song.title,
             color = Color.White,
             fontSize = 28.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.height(40.dp)
         )
 
         Spacer(modifier = Modifier.padding(2.dp))
