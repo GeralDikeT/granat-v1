@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
 
 @Composable
-fun SongList() {
+fun SongList(modifier: Modifier = Modifier) {
     val songs = remember { MainActivity.songs.list }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier.fillMaxWidth()) {
         LazyColumn {
             itemsIndexed(songs) { index, song ->
                 SongItem(

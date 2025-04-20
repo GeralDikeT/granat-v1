@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.granatv1.MainActivity
 import com.example.granatv1.ui.theme.GranatV1Theme
 
 @Composable
@@ -28,9 +29,14 @@ fun MainUI() {
             UnderDivider()
             Spacer(modifier = Modifier.padding(top = 6.dp))
 
-            SongList()
+            Column(
 
-            BottomSongBar()
+            ) {
+                SongList(modifier = Modifier.weight(1f))
+                if (MainActivity.player.currentSong != null) {
+                    BottomSongBar()
+                }
+            }
         }
     }
 }

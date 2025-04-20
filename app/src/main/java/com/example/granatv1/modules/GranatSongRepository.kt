@@ -3,6 +3,8 @@ package com.example.granatv1.modules
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import com.example.granatv1.MainActivity
+import kotlin.random.Random
 
 class GranatSongRepository() {
     val list = mutableListOf<GranatSong>();
@@ -45,6 +47,9 @@ class GranatSongRepository() {
         }
     }
 
+    fun getRandomSong(): GranatSong {
+        return MainActivity.songs.list[Random.nextInt(0, MainActivity.songs.list.size)];
+    }
     public fun getSong(path: String): GranatSong? {
         return null;
     }

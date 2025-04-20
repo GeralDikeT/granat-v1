@@ -37,7 +37,9 @@ import com.example.granatv1.R
 
 @Composable
 fun BottomSongBar(modifier: Modifier = Modifier) {
-    val song = MainActivity.player.currentSong!!;
+    val isPlayerPaused = MainActivity.player.isPaused
+
+    val song = MainActivity.player.currentSong!!
 
     val artistAndAlbumInfo = song.artist + " | " + song.albumTitle
 
@@ -106,7 +108,7 @@ fun BottomSongBar(modifier: Modifier = Modifier) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(-8.dp)
                 ) {
-                    IconButton(onClick = { println("asdad") }) {
+                    IconButton(onClick = { MainActivity.player.playPreviusSong() }) {
                         Image(
                             painter = painterResource(id = R.drawable.previussong_icon),
                             contentDescription = "previusSong",
@@ -123,7 +125,7 @@ fun BottomSongBar(modifier: Modifier = Modifier) {
                             MainActivity.player.resume();
                         }
                     }) {
-                        val icon = if (MainActivity.player.isPlaying()) {
+                        val icon = if (!isPlayerPaused) {
                             R.drawable.pause_icon
                         } else {
                             R.drawable.play_sign
@@ -136,7 +138,7 @@ fun BottomSongBar(modifier: Modifier = Modifier) {
                                 .requiredWidth(25.dp)
                         )
                     }
-                    IconButton(onClick = { println("asdad") }) {
+                    IconButton(onClick = {  MainActivity.player.playNextSong() }) {
                         Image(
                             painter = painterResource(id = R.drawable.nextsong_icon),
                             contentDescription = "nextSong",

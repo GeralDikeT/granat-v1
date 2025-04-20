@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.granatv1.MainActivity
 import com.example.granatv1.R
 
 @Composable
@@ -35,6 +36,7 @@ fun UnderDivider() {
     ) {
         Row(modifier = Modifier.weight(1f)
             .clickable() {
+                MainActivity.player.playRandomSong()
             },
             verticalAlignment = Alignment.CenterVertically
         ) {
