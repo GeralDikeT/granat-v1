@@ -11,6 +11,7 @@ import android.Manifest
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.granatv1.modules.GranatPlayer
 import com.example.granatv1.modules.GranatSongRepository
@@ -33,6 +34,8 @@ class MainActivity : ComponentActivity() {
         } else {
             requestAudioPermission()
         }
+
+        installSplashScreen()
 
         songs.loadSongs(this);
 
