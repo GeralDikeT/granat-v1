@@ -41,12 +41,14 @@ fun ButtonsBar() {
     }
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(22.dp)
+        horizontalArrangement = Arrangement.spacedBy(22.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             onClick = {
                 MainActivity.player.mode = MainActivity.player.nextMode(MainActivity.player.mode)
-            }
+            },
+            modifier = Modifier.weight(1f)
         ) {
             Image(
                 painter = painterResource(id = icon),
@@ -57,7 +59,8 @@ fun ButtonsBar() {
         }
 
         IconButton(
-            onClick = { MainActivity.player.playPreviusSong() }
+            onClick = { MainActivity.player.playPreviusSong() },
+            modifier = Modifier.weight(1f)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.previous_song_white),
@@ -86,12 +89,13 @@ fun ButtonsBar() {
                 painter = painterResource(id = icon),
                 contentDescription = "Play",
                 colorFilter = ColorFilter.tint(colorResource(id = R.color.white)),
-                modifier = Modifier.size(45.dp)
+                modifier = Modifier.size(35.dp)
             )
         }
 
         IconButton(
-            onClick = { MainActivity.player.playNextSong(true) }
+            onClick = { MainActivity.player.playNextSong(true) },
+            modifier = Modifier.weight(1f)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.next_song_white),
@@ -106,13 +110,13 @@ fun ButtonsBar() {
                 MainActivity.player.currentSong!!.let {
                     it.isFavorite = !it.isFavorite
                 }
-            }
+            },
+            modifier = Modifier.weight(1f)
         ) {
             Image(
                 painter = painterResource(id = FIcon),
                 contentDescription = "Favorite",
-                modifier = Modifier.size(35.dp),
-                colorFilter = ColorFilter.tint(colorResource(id = R.color.white))
+                modifier = Modifier.size(35.dp)
             )
         }
     }

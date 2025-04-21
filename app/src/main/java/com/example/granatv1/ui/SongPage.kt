@@ -37,7 +37,7 @@ fun SongPage(navController: NavHostController) {
         SongInfoDiv()
         Spacer(modifier = Modifier.padding(top = 75.dp))
         TimeProgressLine()
-        Spacer(modifier = Modifier.padding(top = 75.dp))
+        Spacer(modifier = Modifier.padding(top = 60.dp))
         ButtonsBar()
 
     }
