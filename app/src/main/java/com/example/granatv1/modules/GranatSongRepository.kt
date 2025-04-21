@@ -2,14 +2,21 @@ package com.example.granatv1.modules
 
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
-import com.example.granatv1.MainActivity
+import androidx.compose.runtime.mutableStateListOf
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
-class GranatSongRepository() {
-    val list = mutableListOf<GranatSong>();
+class GranatSongRepository {
+    val list = mutableStateListOf<GranatSong>()
 
-    public fun loadSongs(context: Context) {
+    fun loadSongs(context: Context) {
+        list.clear()
+
         val projection = arrayOf(
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
@@ -37,23 +44,48 @@ class GranatSongRepository() {
             val pathColumn = it.getColumnIndex(MediaStore.Audio.Media.DATA)
 
             while (it.moveToNext()) {
-                val title = it.getString(titleColumn) ?: "Unknown Title";
-                val artist = it.getString(artistColumn) ?: "Unknown Artist";
-                val albumTitle = it.getString(albumColumn) ?: "Single";
-                val duration = it.getInt(durationColumn);
-                val path = it.getString(pathColumn) ?: "";
+                val title = it.getString(titleColumn) ?: "Unknown Title"
+                val artist = it.getString(artistColumn) ?: "Unknown Artist"
+                val albumTitle = it.getString(albumColumn) ?: "Single"
+                val duration = it.getInt(durationColumn)
+                val path = it.getString(pathColumn) ?: ""
 
-                //val albumArt = getAlbumArt(path)
+                list.add(GranatSong(title, artist, albumTitle, duration, path))
+            }
+        }
+    }
 
-                list.add(GranatSong(title, artist, albumTitle, duration, path));
+    suspend fun loadAlbumArtsAsync() {
+        withContext(Dispatchers.IO) {
+            list.forEachIndexed { index, song ->
+                val art = getAlbumArt(song.path)
+                if (art != null) {
+                    withContext(Dispatchers.Main) {
+                        list[index] = song.copy(albumArt = art)
+                    }
+                }
             }
         }
     }
 
     fun getRandomSong(): GranatSong {
-        return MainActivity.songs.list[Random.nextInt(0, MainActivity.songs.list.size)];
+        return list[Random.nextInt(0, list.size)]
     }
-    public fun getSong(path: String): GranatSong? {
-        return null;
+
+    fun getSong(path: String): GranatSong? {
+        return list.find { it.path == path }
+    }
+
+    private fun getAlbumArt(filePath: String): Bitmap? {
+        val retriever = MediaMetadataRetriever()
+        return try {
+            retriever.setDataSource(filePath)
+            val art = retriever.embeddedPicture
+            retriever.release()
+            art?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

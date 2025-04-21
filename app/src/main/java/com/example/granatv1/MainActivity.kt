@@ -18,6 +18,8 @@ import com.example.granatv1.modules.GranatSongRepository
 import com.example.granatv1.ui.AppNavHost
 import com.example.granatv1.ui.MainPage
 import com.example.granatv1.ui.SongPage
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -38,6 +40,11 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         songs.loadSongs(this);
+
+        MainScope().launch {
+            songs.loadAlbumArtsAsync()
+        }
+
 
         setContent {
             val navController = rememberNavController()
