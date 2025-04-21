@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -33,7 +35,8 @@ fun SongPageNavigation(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.down_arrow),
                 contentDescription = "downArrow",
-                modifier = Modifier.size(35.dp)
+                modifier = Modifier.size(35.dp),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white))
             )
         }
 
@@ -44,7 +47,8 @@ fun SongPageNavigation(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.dots_icon_white),
                 contentDescription = "dotsIcon",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white))
             )
         }
     }

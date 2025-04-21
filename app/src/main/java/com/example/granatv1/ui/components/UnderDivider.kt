@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +26,6 @@ import com.example.granatv1.R
 
 @Composable
 fun UnderDivider() {
-    var context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(top = 8.dp)
@@ -48,7 +48,7 @@ fun UnderDivider() {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "In random order",
-                color = Color.White,
+                color = colorResource(id = R.color.white),
                 fontSize = 14.sp
             )
         }

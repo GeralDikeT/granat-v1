@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -55,8 +56,8 @@ fun BottomSongBar(modifier: Modifier = Modifier, onSongClick: () -> Unit) {
             modifier
                 .fillMaxWidth()
                 .height(60.dp)
-                .background(color = Color(0xFFE1D4D4), shape = RoundedCornerShape(8.dp))
-                .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
+                .background(colorResource(id = R.color.selectSongBackgroundColor), shape = RoundedCornerShape(8.dp))
+                .border(1.dp, colorResource(id = R.color.black), shape = RoundedCornerShape(8.dp))
         ) {
             Row(
                 modifier = Modifier
@@ -90,7 +91,7 @@ fun BottomSongBar(modifier: Modifier = Modifier, onSongClick: () -> Unit) {
                     Column() {
                         Text(
                             text = song.title,
-                            color = Color(0xFF924A4A),
+                            color = colorResource(id = R.color.selectSongTitleColor),
                             fontSize = 16.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -98,7 +99,7 @@ fun BottomSongBar(modifier: Modifier = Modifier, onSongClick: () -> Unit) {
                         )
                         Text(
                             text = artistAndAlbumInfo,
-                            color = Color.Gray,
+                            color = colorResource(id = R.color.gray),
                             fontSize = 14.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

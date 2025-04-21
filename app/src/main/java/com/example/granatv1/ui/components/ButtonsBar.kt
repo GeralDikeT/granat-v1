@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
@@ -50,7 +51,7 @@ fun ButtonsBar() {
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = "Random",
-                colorFilter = ColorFilter.tint(Color.White),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white)),
                 modifier = Modifier.size(35.dp)
             )
         }
@@ -61,7 +62,7 @@ fun ButtonsBar() {
             Image(
                 painter = painterResource(id = R.drawable.previous_song_white),
                 contentDescription = "Previous",
-                colorFilter = ColorFilter.tint(Color.White),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white)),
                 modifier = Modifier.size(35.dp)
             )
         }
@@ -84,7 +85,7 @@ fun ButtonsBar() {
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = "Play",
-                colorFilter = ColorFilter.tint(Color.White),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white)),
                 modifier = Modifier.size(45.dp)
             )
         }
@@ -95,7 +96,7 @@ fun ButtonsBar() {
             Image(
                 painter = painterResource(id = R.drawable.next_song_white),
                 contentDescription = "Next",
-                colorFilter = ColorFilter.tint(Color.White),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white)),
                 modifier = Modifier.size(35.dp)
             )
         }
@@ -110,7 +111,8 @@ fun ButtonsBar() {
             Image(
                 painter = painterResource(id = FIcon),
                 contentDescription = "Favorite",
-                modifier = Modifier.size(35.dp)
+                modifier = Modifier.size(35.dp),
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.white))
             )
         }
     }

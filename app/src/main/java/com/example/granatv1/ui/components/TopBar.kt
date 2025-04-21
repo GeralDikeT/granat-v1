@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +40,7 @@ fun TopBar() {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .background(Color.White, shape = RoundedCornerShape(12.dp))
+                .background(colorResource(id = R.color.white), shape = RoundedCornerShape(12.dp))
                 .fillMaxHeight()
         ) {
             Row(
@@ -52,7 +53,7 @@ fun TopBar() {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = "Search",
-                    tint = Color.Gray
+                    tint = colorResource(id = R.color.gray)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(

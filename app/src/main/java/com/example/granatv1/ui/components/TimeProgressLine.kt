@@ -30,6 +30,8 @@ import com.example.granatv1.modules.GranatSongRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.colorResource
+import com.example.granatv1.R
 
 
 @Composable
@@ -61,13 +63,13 @@ fun TimeProgressLine() {
             modifier = Modifier
                 .width(320.dp)
                 .height(2.dp)
-                .background(Color.Gray)
+                .background(colorResource(id = R.color.gray))
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(progress.coerceIn(0f, 1f))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.white))
             )
         }
 
@@ -80,12 +82,12 @@ fun TimeProgressLine() {
             Text(
                 text = formatTime(currentPosition),
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = colorResource(id = R.color.gray)
             )
             Text(
                 text = String.format("%02d:%02d", minutes, seconds),
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = colorResource(id = R.color.gray)
             )
         }
     }

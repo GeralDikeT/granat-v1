@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -53,7 +54,7 @@ fun SongInfoDiv() {
 
         Text(
             text = song.title,
-            color = Color.White,
+            color = colorResource(id = R.color.white),
             fontSize = 28.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -64,7 +65,7 @@ fun SongInfoDiv() {
         Spacer(modifier = Modifier.padding(2.dp))
         Text(
             text = song.albumTitle,
-            color = Color.Gray,
+            color = colorResource(id = R.color.gray),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             fontSize = 16.sp

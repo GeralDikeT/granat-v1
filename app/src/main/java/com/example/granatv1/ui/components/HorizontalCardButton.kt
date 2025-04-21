@@ -13,16 +13,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.granatv1.R
 
 @Composable
 fun HorizontalCardButton(header: String, imageId: Int, modifier: Modifier = Modifier) {
     Box(modifier) {
         Box(modifier = Modifier
-            .background(Color.White, shape = RoundedCornerShape(9.dp))
+            .background(colorResource(id = R.color.white), shape = RoundedCornerShape(9.dp))
             .fillMaxHeight()
             .fillMaxWidth()
             .clickable() {
@@ -43,7 +45,7 @@ fun HorizontalCardButton(header: String, imageId: Int, modifier: Modifier = Modi
 
                 Text(
                     text = header,
-                    color = Color.Black,
+                    color = colorResource(id = R.color.black),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )

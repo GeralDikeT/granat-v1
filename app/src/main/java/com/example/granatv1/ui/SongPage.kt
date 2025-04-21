@@ -10,10 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.granatv1.MainActivity
+import com.example.granatv1.R
 import com.example.granatv1.ui.components.ButtonsBar
 import com.example.granatv1.ui.components.SongInfoDiv
 import com.example.granatv1.ui.components.SongPageNavigation
@@ -25,7 +27,7 @@ fun SongPage(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .background(Color.Black)
+            .background(colorResource(id = R.color.black))
             .padding(30.dp, 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

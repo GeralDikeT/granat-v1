@@ -1,5 +1,6 @@
 package com.example.granatv1.ui.components
 
+import androidx.annotation.ColorRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,15 @@ import androidx.compose.ui.unit.sp
 import com.example.granatv1.MainActivity
 import com.example.granatv1.modules.GranatSong
 import com.example.granatv1.R
+import androidx.compose.ui.res.colorResource
+
+
+fun durationCalculate(duration: Int) : String {
+    val duration = duration / 1000
+    val minutes = duration / 60
+    val seconds = duration % 60
+    return String.format("%02d:%02d", minutes, seconds)
+}
 
 @Composable
 fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSong) -> Unit) {
@@ -37,12 +47,6 @@ fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSon
     val shortTitle = if (granatSong.title.length > 15) granatSong.title.take(15) + "..." else granatSong.title
     val shortArtistAndAlbumInfo = if (artistAndAlbumInfo.length > 15) granatSong.artist.take(15) + "..." else granatSong.artist
 
-    fun durationCalculate(duration: Int) : String {
-        val duration = duration / 1000
-        val minutes = duration / 60
-        val seconds = duration % 60
-        return String.format("%02d:%02d", minutes, seconds)
-    }
 
     Box(modifier
         .clickable() {
@@ -51,7 +55,7 @@ fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSon
         Box(
             modifier
                 .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(4.dp))
+                .background(colorResource(id = R.color.white), shape = RoundedCornerShape(4.dp))
                 .padding(6.dp)
         ) {
             Row (
@@ -84,7 +88,7 @@ fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSon
                 ) {
                     Text(
                         text = shortTitle,
-                        color = Color.Black,
+                        color = colorResource(id = R.color.black),
                         fontSize = 18.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -94,7 +98,7 @@ fun SongItem(granatSong: GranatSong, modifier: Modifier, onSongClick: (GranatSon
                     ) {
                         Text(
                             text = durationCalculate(granatSong.duration),
-                            color = Color.Gray,
+                            color = colorResource(id = R.color.gray),
                             fontSize = 14.sp
                         )
                         Spacer(modifier.width(4.dp))
