@@ -42,10 +42,11 @@ fun TimeProgressLine() {
     if (!MainActivity.player.isPaused) {
         LaunchedEffect(Unit) {
             while (true) {
-                currentPosition = MainActivity.player.mediaPlayer.currentPosition
                 delay(100L)
+                currentPosition = MainActivity.player.mediaPlayer.currentPosition
             }
         }
+
     }
 
     val durationInSec = maxProgress / 1000
@@ -92,7 +93,6 @@ fun TimeProgressLine() {
         }
     }
 }
-
 
 private fun formatTime(ms: Int): String {
     val totalSec = ms / 1000

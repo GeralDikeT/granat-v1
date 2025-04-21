@@ -33,7 +33,7 @@ fun MainPage(navController: NavHostController) {
             TopBar()
             HorizontalCardsList()
             Divider(modifier = Modifier.padding(top = 8.dp))
-            UnderDivider()
+            UnderDivider(navController)
             Spacer(modifier = Modifier.padding(top = 6.dp))
 
             Column {
