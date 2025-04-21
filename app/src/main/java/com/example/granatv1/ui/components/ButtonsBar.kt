@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,11 +22,16 @@ import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
 import com.example.granatv1.R
 import com.example.granatv1.modules.GranatPlayer
+import com.example.granatv1.modules.loadFavoriteStatus
 import kotlin.random.Random
 
 @Composable
 fun ButtonsBar() {
     val isPlayerPaused = MainActivity.player.isPaused
+
+    val isFavorite = MainActivity.player.currentSong!!.isFavorite
+
+    val FIcon = if (isFavorite) R.drawable.favorite_icon_gold else R.drawable.favorite_white
 
     val icon = when (MainActivity.player.mode) {
         GranatPlayer.ModeState.Normal -> R.drawable.normal_mode_icon
@@ -95,12 +101,15 @@ fun ButtonsBar() {
         }
 
         IconButton(
-            onClick = {}
+            onClick = {
+                MainActivity.player.currentSong!!.let {
+                    it.isFavorite = !it.isFavorite
+                }
+            }
         ) {
             Image(
-                painter = painterResource(id = R.drawable.favorite_white),
+                painter = painterResource(id = FIcon),
                 contentDescription = "Favorite",
-                colorFilter = ColorFilter.tint(Color.White),
                 modifier = Modifier.size(35.dp)
             )
         }

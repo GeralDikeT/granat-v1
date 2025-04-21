@@ -31,7 +31,7 @@ class GranatPlayer {
     }
 
 
-    var mode by mutableStateOf(ModeState.Loop)
+    var mode by mutableStateOf(ModeState.Normal)
 
     init {
         mediaPlayer.setOnCompletionListener { afterSong() };
