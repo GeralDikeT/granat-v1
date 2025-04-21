@@ -20,19 +20,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
 import com.example.granatv1.R
+import com.example.granatv1.modules.GranatPlayer
+import kotlin.random.Random
 
 @Composable
 fun ButtonsBar() {
     val isPlayerPaused = MainActivity.player.isPaused
 
+    val icon = when (MainActivity.player.mode) {
+        GranatPlayer.ModeState.Normal -> R.drawable.normal_mode_icon
+        GranatPlayer.ModeState.Random -> R.drawable.random_icon
+        GranatPlayer.ModeState.Loop -> R.drawable.loop_icon
+    }
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(22.dp)
     ) {
         IconButton(
-            onClick = {}
+            onClick = {
+                MainActivity.player.mode = MainActivity.player.nextMode(MainActivity.player.mode)
+            }
         ) {
             Image(
-                painter = painterResource(id = R.drawable.random_icon),
+                painter = painterResource(id = icon),
                 contentDescription = "Random",
                 colorFilter = ColorFilter.tint(Color.White),
                 modifier = Modifier.size(35.dp)
@@ -74,7 +84,7 @@ fun ButtonsBar() {
         }
 
         IconButton(
-            onClick = { MainActivity.player.playNextSong() }
+            onClick = { MainActivity.player.playNextSong(true) }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.next_song_white),

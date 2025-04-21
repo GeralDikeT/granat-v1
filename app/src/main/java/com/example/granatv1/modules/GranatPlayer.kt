@@ -15,7 +15,23 @@ class GranatPlayer {
 
     var isPaused by mutableStateOf(false)
 
-    var isRandom = false;
+    enum class ModeState {
+        Normal,
+        Random,
+        Loop
+    }
+
+    fun nextMode(currentMode: ModeState): ModeState {
+        val values = GranatPlayer.ModeState.entries
+        val currentIndex = values.indexOf(currentMode)
+
+        val nextIndex = (currentIndex + 1) % values.size
+
+        return values[nextIndex]
+    }
+
+
+    var mode by mutableStateOf(ModeState.Loop)
 
     init {
         mediaPlayer.setOnCompletionListener { afterSong() };
@@ -29,24 +45,30 @@ class GranatPlayer {
         playNextSong();
     }
 
-    fun playNextSong() {
+    fun playNextSong(nextByButton: Boolean = false) {
         val currentSongIndex = MainActivity.songs.list.indexOfFirst { song -> song === currentSong }
         var nextSongIndex = 0;
 
-        if (isRandom) {
-            playSong(MainActivity.songs.getRandomSong());
-            return;
-        }
-        else {
+        if (nextByButton && mode == ModeState.Loop) {
             nextSongIndex = currentSongIndex + 1;
+            if (nextSongIndex >= MainActivity.songs.list.count()) {
+                nextSongIndex = 0;
+            }
+            val nextSong = MainActivity.songs.list[nextSongIndex];
+            playSong(nextSong);
         }
-
-        if (nextSongIndex >= MainActivity.songs.list.count()) {
-            nextSongIndex = 0;
+        when (mode) {
+            ModeState.Random -> playSong(MainActivity.songs.getRandomSong())
+            ModeState.Loop -> playSong(currentSong!!)
+            ModeState.Normal -> {
+                nextSongIndex = currentSongIndex + 1;
+                if (nextSongIndex >= MainActivity.songs.list.count()) {
+                    nextSongIndex = 0;
+                }
+                val nextSong = MainActivity.songs.list[nextSongIndex];
+                playSong(nextSong);
+            }
         }
-
-        val nextSong = MainActivity.songs.list[nextSongIndex];
-        playSong(nextSong);
     }
 
     fun playPreviusSong() {
@@ -66,6 +88,9 @@ class GranatPlayer {
 
     fun playSong(song: GranatSong) {
         if (mediaPlayer.isPlaying) {
+            if (song == currentSong) {
+                return
+            }
             mediaPlayer.stop();
         }
 

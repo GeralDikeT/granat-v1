@@ -139,7 +139,7 @@ fun BottomSongBar(modifier: Modifier = Modifier, onSongClick: () -> Unit) {
                                 .requiredWidth(25.dp)
                         )
                     }
-                    IconButton(onClick = {  MainActivity.player.playNextSong() }) {
+                    IconButton(onClick = {  MainActivity.player.playNextSong(true) }) {
                         Image(
                             painter = painterResource(id = R.drawable.nextsong_icon),
                             contentDescription = "nextSong",

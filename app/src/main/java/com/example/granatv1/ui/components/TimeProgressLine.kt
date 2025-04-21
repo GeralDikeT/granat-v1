@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,51 +29,72 @@ import com.example.granatv1.MainActivity
 import com.example.granatv1.modules.GranatSongRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
+
 
 @Composable
 fun TimeProgressLine() {
-    val currentPosition = MainActivity.player.mediaPlayer.currentPosition
-    val maxProgrss = MainActivity.player.currentSong
+    var currentPosition by remember { mutableStateOf(MainActivity.player.mediaPlayer.currentPosition) }
+    val maxProgress = MainActivity.player.currentSong!!.duration
 
-    Box(
+    if (!MainActivity.player.isPaused) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                currentPosition = MainActivity.player.mediaPlayer.currentPosition
+                delay(100L)
+            }
+        }
+    }
 
+    val durationInSec = maxProgress / 1000
+    val minutes = durationInSec / 60
+    val seconds = durationInSec % 60
+
+    val progress = currentPosition.toFloat() / maxProgress.toFloat()
+
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
-                .height(1.8.dp)
-                .background(color = Color.Gray)
                 .width(320.dp)
+                .height(2.dp)
+                .background(Color.Gray)
         ) {
-
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress.coerceIn(0f, 1f))
+                    .background(Color.White)
+            )
         }
 
-        Box(
+        Row(
             modifier = Modifier
-                .height(1.8.dp)
-                .background(color = Color.White)
-                .width(160.dp)
-        ) {
-        }
-
-        Box(
-            modifier = Modifier.padding(top = 6.dp).width(320.dp)
+                .width(320.dp)
+                .padding(top = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "2:03",
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.TopStart).padding(start = 1.dp),
-                fontSize = 16.sp
+                text = formatTime(currentPosition),
+                fontSize = 14.sp,
+                color = Color.Gray
             )
-
             Text(
-                text = "6:03",
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.TopEnd).padding(end = 1.dp),
-                fontSize = 16.sp
+                text = String.format("%02d:%02d", minutes, seconds),
+                fontSize = 14.sp,
+                color = Color.Gray
             )
         }
-
     }
+}
 
 
+private fun formatTime(ms: Int): String {
+    val totalSec = ms / 1000
+    val min = totalSec / 60
+    val sec = totalSec % 60
+    return String.format("%d:%02d", min, sec)
 }
