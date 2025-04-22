@@ -9,17 +9,24 @@ class MediaControlReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             "ACTION_PREV" -> {
-
-                Log.d("MediaControlReceiver", "Previous Track")
+                MainActivity.player.playPreviusSong()
             }
             "ACTION_PAUSE" -> {
-
-                Log.d("MediaControlReceiver", "Pause")
+                if (MainActivity.player.isPaused) {
+                    MainActivity.player.resume()
+                } else {
+                    MainActivity.player.pause()
+                }
             }
             "ACTION_NEXT" -> {
-
-                Log.d("MediaControlReceiver", "Next Track")
+                MainActivity.player.playNextSong()
             }
+//            "MODE_CHANGE" -> {
+//                MainActivity.player.playNextSong()
+//            }
+//            "FAVORITE_STATE_CHANGE" -> {
+//                MainActivity.player.playNextSong()
+//            }
         }
     }
 }

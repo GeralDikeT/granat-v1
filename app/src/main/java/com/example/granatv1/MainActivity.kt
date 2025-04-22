@@ -20,12 +20,6 @@ import kotlinx.coroutines.launch
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.os.Build
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.media.app.NotificationCompat.MediaStyle
-
 
 
 class MainActivity : ComponentActivity() {

@@ -1,6 +1,5 @@
 package com.example.granatv1.modules
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -10,17 +9,13 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import com.example.granatv1.MainActivity
 import com.example.granatv1.MainActivity.Companion.songs
 import com.example.granatv1.MediaControlReceiver
 import com.example.granatv1.R
-import com.example.granatv1.ui.SongPage
-import kotlin.random.Random
 
 class GranatPlayer(private val context: Context) {
     var mediaPlayer: MediaPlayer = MediaPlayer();
@@ -61,43 +56,43 @@ class GranatPlayer(private val context: Context) {
     }
 
     fun playNextSong(nextByButton: Boolean = false) {
-        val currentSongIndex = MainActivity.songs.list.indexOfFirst { song -> song === currentSong }
+        val currentSongIndex = songs.list.indexOfFirst { song -> song === currentSong }
         var nextSongIndex = 0;
 
         if (nextByButton && mode == ModeState.Loop) {
             nextSongIndex = currentSongIndex + 1;
-            if (nextSongIndex >= MainActivity.songs.list.count()) {
+            if (nextSongIndex >= songs.list.count()) {
                 nextSongIndex = 0;
             }
-            val nextSong = MainActivity.songs.list[nextSongIndex];
+            val nextSong = songs.list[nextSongIndex];
             playSong(nextSong);
         }
         when (mode) {
-            ModeState.Random -> playSong(MainActivity.songs.getRandomSong())
+            ModeState.Random -> playSong(songs.getRandomSong())
             ModeState.Loop -> playSong(currentSong!!)
             ModeState.Normal -> {
                 nextSongIndex = currentSongIndex + 1;
-                if (nextSongIndex >= MainActivity.songs.list.count()) {
+                if (nextSongIndex >= songs.list.count()) {
                     nextSongIndex = 0;
                 }
-                val nextSong = MainActivity.songs.list[nextSongIndex];
+                val nextSong = songs.list[nextSongIndex];
                 playSong(nextSong);
             }
         }
     }
 
     fun playPreviusSong() {
-        val currentSongIndex = MainActivity.songs.list.indexOfFirst { song -> song === currentSong }
+        val currentSongIndex = songs.list.indexOfFirst { song -> song === currentSong }
         var previusSongIndex = 0;
 
         previusSongIndex = currentSongIndex - 1;
 
 
         if (previusSongIndex == -1) {
-            previusSongIndex = MainActivity.songs.list.count() - 1;
+            previusSongIndex = songs.list.count() - 1;
         }
 
-        val previusSong = MainActivity.songs.list[previusSongIndex];
+        val previusSong = songs.list[previusSongIndex];
         playSong(previusSong);
     }
 
@@ -122,16 +117,18 @@ class GranatPlayer(private val context: Context) {
     }
 
     fun playRandomSong() {
-        playSong(MainActivity.songs.getRandomSong());
+        playSong(songs.getRandomSong());
     }
 
     fun pause() {
         mediaPlayer.pause();
         isPaused = true
+        createNotification()
     }
     fun resume() {
         mediaPlayer.start();
         isPaused = false
+        createNotification()
     }
 
     fun createNotification() {
@@ -149,26 +146,38 @@ class GranatPlayer(private val context: Context) {
         val prevIntent = Intent(context, MediaControlReceiver::class.java).apply {
             action = "ACTION_PREV"
         }
-        val prevPendingIntent = PendingIntent.getBroadcast(context, 0, prevIntent, PendingIntent.FLAG_IMMUTABLE)
+        val prevPendingIntent = PendingIntent.getBroadcast(context, 12, prevIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val pauseIntent = Intent(context, MediaControlReceiver::class.java).apply {
             action = "ACTION_PAUSE"
         }
-        val pausePendingIntent = PendingIntent.getBroadcast(context, 0, pauseIntent, PendingIntent.FLAG_IMMUTABLE)
+        val pausePendingIntent = PendingIntent.getBroadcast(context, 10, pauseIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val nextIntent = Intent(context, MediaControlReceiver::class.java).apply {
             action = "ACTION_NEXT"
         }
-        val nextPendingIntent = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_IMMUTABLE)
+        val nextPendingIntent = PendingIntent.getBroadcast(context, 11, nextIntent, PendingIntent.FLAG_IMMUTABLE)
+
+//        val modeChange = Intent(context, MediaControlReceiver::class.java).apply {
+//            action = "ACTION_NEXT"
+//        }
+//        val modeChangePendingIntent = PendingIntent.getBroadcast(context, 11, nextIntent, PendingIntent.FLAG_IMMUTABLE)
+//
+//        val favorite = Intent(context, MediaControlReceiver::class.java).apply {
+//            action = "ACTION_NEXT"
+//        }
+//        val favoritePendingIntent = PendingIntent.getBroadcast(context, 11, nextIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(context, "media_playback_channel")
-            .setSmallIcon(R.drawable.filter_icon)
+            .setSmallIcon(R.drawable.star_ic_notification)
             .setLargeIcon(currentSong!!.albumArt)
             .setContentTitle("Currently Playing")
             .setContentText("adasd" ?: "nothing")
-            .addAction(android.R.drawable.ic_media_previous, "Назад", prevPendingIntent)
-            .addAction(android.R.drawable.ic_media_play, "Пауза", pausePendingIntent)
-            .addAction(android.R.drawable.ic_media_next, "Вперёд", nextPendingIntent)
+//            .addAction(R.drawable.normal_mode_icon_notification, "previousSong", prevPendingIntent)
+            .addAction(R.drawable.previous_song_icon_notification, "previousSong", prevPendingIntent)
+            .addAction( if (MainActivity.player.isPaused) R.drawable.play_button_ic_notification else R.drawable.stop_icon_notification, "play/Pause", pausePendingIntent)
+            .addAction(R.drawable.next_song_icon_notification, "nextSong", nextPendingIntent)
+//            .addAction(R.drawable.favorite_icon_notification, "previousSong", prevPendingIntent)
             .setStyle(
                 MediaStyle()
                     .setMediaSession(mediaSession.sessionToken)
