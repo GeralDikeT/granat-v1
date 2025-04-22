@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
+    val activityPermissionProvider = ActivityPermissionsProvider(this)
+
     companion object {
         val songs = GranatSongRepository();
         val player = GranatPlayer();
@@ -31,10 +33,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (isAudioPermissionGranted()) {
-            accessAudioLibrary()
+        if (activityPermissionProvider.isAudioPermissionGranted()) {
+            activityPermissionProvider.accessAudioLibrary()
         } else {
-            requestAudioPermission()
+            activityPermissionProvider.requestAudioPermission()
         }
 
         installSplashScreen()
@@ -51,42 +53,7 @@ class MainActivity : ComponentActivity() {
             AppNavHost(navController)
         }
     }
-    private fun isAudioPermissionGranted() : Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED
-        } else {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        }
-    }
 
-    private fun requestAudioPermission() {
-        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
-        } else {
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-
-        requestPermissionLauncher.launch(permissions)
-    }
-
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {permission ->
-        val audioPermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission[Manifest.permission.READ_MEDIA_AUDIO] ?: false
-        } else {
-            permission[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
-        }
-
-        if (audioPermissionGranted) {
-            accessAudioLibrary()
-        } else {
-
-            Toast.makeText(this, "Audio Permission Granted", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun accessAudioLibrary() {
-        return
-    }
 }
 
 

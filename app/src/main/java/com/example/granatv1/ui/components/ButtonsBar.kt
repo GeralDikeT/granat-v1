@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.example.granatv1.MainActivity
 import com.example.granatv1.R
 import com.example.granatv1.modules.GranatPlayer
-import com.example.granatv1.modules.loadFavoriteStatus
 import kotlin.random.Random
 
 @Composable
