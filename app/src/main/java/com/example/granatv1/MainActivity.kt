@@ -1,37 +1,45 @@
 package com.example.granatv1
 
-import android.content.pm.PackageManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import android.os.Build
-import androidx.core.content.ContextCompat
-import android.Manifest
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.granatv1.modules.GranatPlayer
 import com.example.granatv1.modules.GranatSongRepository
 import com.example.granatv1.ui.AppNavHost
-import com.example.granatv1.ui.MainPage
 import com.example.granatv1.ui.SongPage
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.os.Build
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.media.app.NotificationCompat.MediaStyle
+
 
 
 class MainActivity : ComponentActivity() {
     val activityPermissionProvider = ActivityPermissionsProvider(this)
 
     companion object {
-        val songs = GranatSongRepository();
-        val player = GranatPlayer();
+        lateinit var player: GranatPlayer
+        val songs = GranatSongRepository()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        player = GranatPlayer(this)
 
         if (activityPermissionProvider.isAudioPermissionGranted()) {
             activityPermissionProvider.accessAudioLibrary()
@@ -39,14 +47,25 @@ class MainActivity : ComponentActivity() {
             activityPermissionProvider.requestAudioPermission()
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Media Playback"
+            val descriptionText = "Notifications for media playback"
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel("media_playback_channel", name, importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
         installSplashScreen()
 
-        songs.loadSongs(this);
+        songs.loadSongs(this)
 
         MainScope().launch {
             songs.loadAlbumArtsAsync()
         }
-
 
         setContent {
             val navController = rememberNavController()
@@ -55,8 +74,6 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
