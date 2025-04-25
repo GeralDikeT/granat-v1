@@ -31,7 +31,11 @@ import com.example.granatv1.modules.GranatSong
 @Composable
 fun SongInfoDiv() {
 
-    val song = MainActivity.player.currentSong!!
+    val song = MainActivity.player.currentSong
+
+    if (song == null) {
+        return
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

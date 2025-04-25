@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        player = GranatPlayer(this)
+        player = GranatPlayer(applicationContext)
 
         if (activityPermissionProvider.isAudioPermissionGranted()) {
             activityPermissionProvider.accessAudioLibrary()
@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             AppNavHost(navController)
         }
+
     }
 
 }

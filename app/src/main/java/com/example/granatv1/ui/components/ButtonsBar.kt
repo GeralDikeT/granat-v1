@@ -41,7 +41,8 @@ fun ButtonsBar() {
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(22.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.height(35.dp)
     ) {
         IconButton(
             onClick = {
