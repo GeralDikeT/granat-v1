@@ -1,6 +1,7 @@
 package com.example.granatv1.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +31,12 @@ import com.example.granatv1.modules.GranatSongRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import com.example.granatv1.R
+import com.example.granatv1.modules.GranatPlayer
 
 
 @Composable
@@ -61,6 +66,15 @@ fun TimeProgressLine() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures { tapOffset ->
+                    val clickedPosition = (tapOffset.x / 960) * maxProgress.toFloat()
+
+                    MainActivity.player.seekSongTo(clickedPosition.toInt())
+                }
+            }
+        ) {
+            Box(
             modifier = Modifier
                 .width(320.dp)
                 .height(2.dp)
@@ -73,6 +87,8 @@ fun TimeProgressLine() {
                     .background(colorResource(id = R.color.white))
             )
         }
+        }
+
 
         Row(
             modifier = Modifier

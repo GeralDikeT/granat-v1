@@ -129,6 +129,11 @@ class GranatPlayer(private val context: Context) {
         createNotification()
     }
 
+    fun seekSongTo(clickedPosition: Int) {
+        MainActivity.player.mediaPlayer.seekTo(clickedPosition)
+    }
+
+
     fun createNotification() {
         if (mediaSession == null) {
             mediaSession = MediaSessionCompat(context, "MyMediaSession")
